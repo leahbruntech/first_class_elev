@@ -3,19 +3,37 @@ $sent = false;
 
 if (isset($_POST['submit'])) {
 
-	$to 		= "cabanada_liezyl@yahoo.com";
-	$from 		= $_POST['email'];
-	$subject 	= "First Class Elevator Contact Form";
+	$to 	  = "cabanada_liezyl@yahoo.com";
+	$from 	  = $_POST['email'];
+	$subject  = "First Class Elevator Contact Form";
 
-	$content 	= $_POST['content'];
+	$content  = 'Name: '.$_POST['name']. "\r\n";
+	$content .= 'Email: '.$_POST['email']. "\r\n";
+	$content .= 'Phone: '.$_POST['phone']. "\r\n";
+	$content .= 'Message: '."\r\n".$_POST['content'];
 
-	$headers  	= "MIME-Version: 1.0" . "\r\n";
-	$headers   .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-	
-	$headers   .= "From: ".$_POST['email'];
+	echo $content;
+
+	$type = 'plain'; // or HTML
+	$charset = 'utf-8';
+
+	$mail     = 'no-reply@'.str_replace('www.', '', $_SERVER['SERVER_NAME']);
+	$uniqid   = md5(uniqid(time()));
+	$headers  = 'From: '.$mail."\n";
+	$headers .= 'Reply-to: '.$mail."\n";
+	$headers .= 'Return-Path: '.$mail."\n";
+	$headers .= 'Message-ID: <'.$uniqid.'@'.$_SERVER['SERVER_NAME'].">\n";
+	$headers .= 'MIME-Version: 1.0'."\n";
+	$headers .= 'Date: '.gmdate('D, d M Y H:i:s', time())."\n";
+	$headers .= 'X-Priority: 3'."\n";
+	$headers .= 'X-MSMail-Priority: Normal'."\n";
+	$headers .= 'Content-Type: multipart/mixed;boundary="----------'.$uniqid.'"'."\n\n";
+	$headers .= '------------'.$uniqid."\n";
+	$headers .= 'Content-type: text/'.$type.';charset='.$charset.''."\n";
+	$headers .= 'Content-transfer-encoding: 7bit';
 
 
-	$mail = mail($to,$subject,$content,$from);
+	$mail = mail($to,$subject,$content,$headers);
 
 	if ($mail) {
 		$sent = true;
